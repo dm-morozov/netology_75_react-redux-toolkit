@@ -1,6 +1,6 @@
 // src/store/movieSlice.ts
 
-import { createSlice } from '@reduxjs/toolkit'
+import { createSlice, type PayloadAction } from '@reduxjs/toolkit'
 import type { MovieSearchResult } from '../types/movie.types'
 
 interface MovieState {
@@ -36,11 +36,23 @@ const movieSlice = createSlice({
         },
       ]
     },
-  }, // Пустой редьюсер
+
+    // В Redux Toolkit данные,
+    // которые мы передаем в экшен, называются Payload (полезная нагрузка)
+    setMovieByTitle: (state, action: PayloadAction<string>) => {
+      state.results = [
+        {
+          imdbID: 'custom-id',
+          Title: action.payload, // Используем данные из инпута
+          Year: '2026',
+          Type: 'movie',
+          Poster: `https://placehold.co/300x450?text=${action.payload}`,
+        },
+      ]
+    },
+  },
 })
 
-export const { setTestMovie } = movieSlice.actions
+export const { setTestMovie, setMovieByTitle } = movieSlice.actions
 // Экспортируем только редюсер
 export default movieSlice.reducer
-
-console.log({ setTestMovie })

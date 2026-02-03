@@ -5,7 +5,7 @@ import './movie.style.css'
 import MovieCard from '../MovieCard'
 import { useDispatch, useSelector } from 'react-redux'
 import type { RootState } from '../../../store/index'
-import { setTestMovie } from '../../../store/movieSlice'
+import { setMovieByTitle } from '../../../store/movieSlice'
 
 export default function SearchPage() {
   const [query, setQuery] = useState('')
@@ -22,16 +22,19 @@ export default function SearchPage() {
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault()
 
-    if (!query.trim()) {
+    const trimmedQuery = query.trim()
+
+    if (!trimmedQuery) {
       setQuery('')
       inputRef.current?.focus()
       return
     }
-    console.log('Будем искать →', query.trim())
+    console.log('Будем искать →', trimmedQuery)
 
-    dispatch(setTestMovie())
-    setQuery('')
-    // здесь позже подключим redux
+    // Диспатчим экшен
+    dispatch(setMovieByTitle(trimmedQuery))
+
+    setQuery('') // Очищаем инпут
   }
 
   return (
