@@ -14,7 +14,7 @@ const initialState: MovieState = {
       Title: 'Побег из Шоушенка (Redux)',
       Year: '1994',
       Type: 'movie',
-      Poster: 'https://via.placeholder.com/300x450?text=Redux+Ready',
+      Poster: 'https://placehold.co/300x450?text=Redux+Ready',
     },
   ],
 }
@@ -22,7 +22,8 @@ const initialState: MovieState = {
 const movieSlice = createSlice({
   name: 'movies',
   initialState,
-  reducers: undefined,
+  reducers: {}, // Пустой редьюсер
 })
 
-export default movieSlice
+// Экспортируем только редюсер
+export default movieSlice.reducer

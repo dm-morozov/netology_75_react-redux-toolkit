@@ -3,10 +3,17 @@
 import { useRef, useState } from 'react'
 import './movie.style.css'
 import MovieCard from '../MovieCard'
+import { useSelector } from 'react-redux'
+import type { RootState } from '../../../store/index'
 
 export default function SearchPage() {
   const [query, setQuery] = useState('')
   const inputRef = useRef<HTMLInputElement>(null)
+
+  // Достаем массив результатов из Редукс
+  // state.movies лежит в state
+
+  const results = useSelector((state: RootState) => state.movies.results)
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault()
@@ -42,24 +49,9 @@ export default function SearchPage() {
       </form>
 
       <div className="movies-grid">
-        {/* временные тестовые данные */}
-        {[
-          {
-            imdbID: 'tt1',
-            Title: 'Test Movie 1',
-            Year: '2023',
-            Type: 'movie' as const,
-            Poster: 'https://via.placeholder.com/300x450',
-          },
-          {
-            imdbID: 'tt2',
-            Title: 'Test Movie 2',
-            Year: '2024',
-            Type: 'series' as const,
-            Poster: 'N/A',
-          },
-        ].map((fake) => (
-          <MovieCard key={fake.imdbID} movie={fake} />
+        {/* 4. Мапим данные из Redux вместо фейкового массива */}
+        {results.map((movie) => (
+          <MovieCard key={movie.imdbID} movie={movie} />
         ))}
       </div>
     </div>
