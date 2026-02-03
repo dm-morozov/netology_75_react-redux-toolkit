@@ -22,8 +22,25 @@ const initialState: MovieState = {
 const movieSlice = createSlice({
   name: 'movies',
   initialState,
-  reducers: {}, // Пустой редьюсер
+  reducers: {
+    // создаем действие Action
+    // action — это объект, который несет новые данные
+    setTestMovie: (state) => {
+      state.results = [
+        {
+          imdbID: 'tt0080684',
+          Title: 'Звёздные войны: Империя наносит ответный удар',
+          Year: '1980',
+          Type: 'movie',
+          Poster: 'https://placehold.co/300x450?text=Action+Worked!',
+        },
+      ]
+    },
+  }, // Пустой редьюсер
 })
 
+export const { setTestMovie } = movieSlice.actions
 // Экспортируем только редюсер
 export default movieSlice.reducer
+
+console.log({ setTestMovie })

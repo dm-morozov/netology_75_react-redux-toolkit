@@ -3,12 +3,16 @@
 import { useRef, useState } from 'react'
 import './movie.style.css'
 import MovieCard from '../MovieCard'
-import { useSelector } from 'react-redux'
+import { useDispatch, useSelector } from 'react-redux'
 import type { RootState } from '../../../store/index'
+import { setTestMovie } from '../../../store/movieSlice'
 
 export default function SearchPage() {
   const [query, setQuery] = useState('')
   const inputRef = useRef<HTMLInputElement>(null)
+
+  // Создаем диспетчера (курьера)
+  const dispatch = useDispatch()
 
   // Достаем массив результатов из Редукс
   // state.movies лежит в state
@@ -24,6 +28,8 @@ export default function SearchPage() {
       return
     }
     console.log('Будем искать →', query.trim())
+
+    dispatch(setTestMovie())
     setQuery('')
     // здесь позже подключим redux
   }
