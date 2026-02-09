@@ -1,3 +1,7 @@
+.movie-app-container {
+  width: 680px;
+}
+
 .search-form {
   display: flex;
   justify-content: center;
@@ -21,8 +25,8 @@
 
 .movies-grid {
   display: grid;
-  grid-template-rows: auto;
   grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+  grid-auto-rows: minmax(100px, auto);
   gap: 16px;
   margin-top: 32px;
 }

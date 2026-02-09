@@ -4,20 +4,23 @@ import { useRef, useState } from 'react'
 import './movie.style.css'
 import MovieCard from '../MovieCard'
 import { useDispatch, useSelector } from 'react-redux'
-import type { RootState } from '../../../store/index'
-import { setMovieByTitle } from '../../../store/movieSlice'
+import type { AppDispatch, RootState } from '../../../store/index'
+import { fetchMovie } from '../../../store/movieSlice'
 
 export default function SearchPage() {
   const [query, setQuery] = useState('')
   const inputRef = useRef<HTMLInputElement>(null)
 
   // Создаем диспетчера (курьера)
-  const dispatch = useDispatch()
+  // Для асинхронных экшенов в TS лучше явно указать тип AppDispatch
+  const dispatch = useDispatch<AppDispatch>()
 
   // Достаем массив результатов из Редукс
   // state.movies лежит в state
-
-  const results = useSelector((state: RootState) => state.movies.results)
+  // теперь нам нужно обратиться не к state.movies и достать все необходимое
+  const { results, loading, error } = useSelector(
+    (state: RootState) => state.movies,
+  )
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault()
@@ -32,7 +35,8 @@ export default function SearchPage() {
     console.log('Будем искать →', trimmedQuery)
 
     // Диспатчим экшен
-    dispatch(setMovieByTitle(trimmedQuery))
+    // но уже теперь уже настояший поиск fetchMovie
+    dispatch(fetchMovie(trimmedQuery))
 
     setQuery('') // Очищаем инпут
   }
@@ -52,10 +56,15 @@ export default function SearchPage() {
           value={query}
           onChange={(e) => setQuery(e.target.value)}
         />
-        <button type="submit" className="search-button">
-          Найти
+        <button type="submit" className="search-button" disabled={loading}>
+          {loading ? 'Ищем...' : 'Найти'}
         </button>
       </form>
+
+      {
+        // Показываем ошибку если она есть
+        error && <p className="search-error">{error}</p>
+      }
 
       <div className="movies-grid">
         {/* 4. Мапим данные из Redux вместо фейкового массива */}
