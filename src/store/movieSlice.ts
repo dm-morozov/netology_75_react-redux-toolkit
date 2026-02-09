@@ -14,6 +14,18 @@ import axios from 'axios'
 
 const API_KEY = '5e1d52b3'
 
+// Локальное хранилище
+const LOCAL_STORAGE_KEY = 'movie_favorites'
+
+const saveToLocalStorage = (state: MovieSearchResult[]) => {
+  localStorage.setItem(LOCAL_STORAGE_KEY, JSON.stringify(state))
+}
+
+const loadFromLocalStorage = (): MovieSearchResult[] => {
+  const data = localStorage.getItem(LOCAL_STORAGE_KEY)
+  return data ? JSON.parse(data) : []
+}
+
 // AsyncThunk — это специальный инструмент в Redux Toolkit
 // для работы с асинхронным кодом (запросами к серверу).
 // Автоматически создать три состояния:
@@ -82,7 +94,7 @@ const initialState: MovieState = {
   // теперь result будет пустым массивом изначально. Без тестовых данных
   results: [],
   selectedMovie: null,
-  favorites: [], // список избранных изначально будет пустым
+  favorites: loadFromLocalStorage(), // загружаем из локального хранилища
   loading: false, // загрузка не происходит
   error: null, // начальное значение null, как в интерфейсе
 }
@@ -103,6 +115,8 @@ const movieSlice = createSlice({
 
       if (!exist) {
         state.favorites.push(action.payload)
+        // сохраняем в localStorage
+        saveToLocalStorage(state.favorites)
       }
     },
 
@@ -110,6 +124,9 @@ const movieSlice = createSlice({
       state.favorites = state.favorites.filter(
         (movie) => movie.imdbID !== action.payload,
       )
+
+      // сохраняем в localStorage отфильтрованный список
+      saveToLocalStorage(state.favorites)
     },
   },
   extraReducers(builder) {
