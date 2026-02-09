@@ -4,6 +4,7 @@ import { Link, Route, Routes } from 'react-router-dom'
 import './App.css'
 import SearchPage from './components/movie/pages/SearchPage'
 import MovieDetailPage from './components/movie/pages/MovieDetailPage'
+import FavoritesPage from './components/movie/pages/FavoritesPage'
 
 function App() {
   return (
@@ -20,9 +21,6 @@ function App() {
           <Link to="/" className="nav-link">
             Поиск
           </Link>
-          <Link to="/movie/tt12345" className="nav-link">
-            Пример фильма
-          </Link>
           <Link to="/favorites" className="nav-link">
             Избранное
           </Link>
@@ -31,7 +29,7 @@ function App() {
         <Routes>
           <Route path="/" element={<SearchPage />} />
           <Route path="/movie/:id" element={<MovieDetailPage />} />
-          <Route path="/favorites" element={<div>Избранное</div>} />
+          <Route path="/favorites" element={<FavoritesPage />} />
         </Routes>
       </div>
     </>

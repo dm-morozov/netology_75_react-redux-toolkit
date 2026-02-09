@@ -1,9 +1,14 @@
 // src/store/movieSlice.ts
 
-import { createAsyncThunk, createSlice } from '@reduxjs/toolkit'
+import {
+  createAsyncThunk,
+  createSlice,
+  type PayloadAction,
+} from '@reduxjs/toolkit'
 import {
   type SearchResponse,
   type MovieSearchResult,
+  type MovieDetails,
 } from '../types/movie.types'
 import axios from 'axios'
 
@@ -66,7 +71,9 @@ export const fetchMovieDetails = createAsyncThunk(
 interface MovieState {
   results: MovieSearchResult[]
   //Добавим новое свойство в котором будут лежать полные данные
-  selectedMovie: any | null
+  selectedMovie: MovieDetails | null
+  // Добавим теперь список избранных
+  favorites: MovieSearchResult[]
   loading: boolean // флаг загрузки
   error: string | null // ну и поле для ошибки
 }
@@ -75,6 +82,7 @@ const initialState: MovieState = {
   // теперь result будет пустым массивом изначально. Без тестовых данных
   results: [],
   selectedMovie: null,
+  favorites: [], // список избранных изначально будет пустым
   loading: false, // загрузка не происходит
   error: null, // начальное значение null, как в интерфейсе
 }
@@ -86,6 +94,22 @@ const movieSlice = createSlice({
   reducers: {
     clearSelectedMovie: (state) => {
       state.selectedMovie = null
+    },
+    // Добавим редюсер дл ядобавления в избранное
+    addToFavorites: (state, action: PayloadAction<MovieSearchResult>) => {
+      const exist = state.favorites.some(
+        (movie) => movie.imdbID === action.payload.imdbID,
+      )
+
+      if (!exist) {
+        state.favorites.push(action.payload)
+      }
+    },
+
+    removeFromFavorites: (state, action: PayloadAction<string>) => {
+      state.favorites = state.favorites.filter(
+        (movie) => movie.imdbID !== action.payload,
+      )
     },
   },
   extraReducers(builder) {
@@ -130,4 +154,5 @@ const movieSlice = createSlice({
 export default movieSlice.reducer
 
 // теперь экспортируем еще и action
-export const { clearSelectedMovie } = movieSlice.actions
+export const { clearSelectedMovie, addToFavorites, removeFromFavorites } =
+  movieSlice.actions
