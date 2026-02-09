@@ -40,13 +40,33 @@ export const fetchMovie = createAsyncThunk(
   },
 )
 
-//
+//Добавим createAsyncThunk для загрузки полной информации о фильме
+
+export const fetchMovieDetails = createAsyncThunk(
+  'media/fetchMovieDetails', // sliceName/actionName - Название действия (может быть любым, мы указываем тип и действие)
+  async (id: string, { rejectWithValue }) => {
+    try {
+      const response = await axios.get(
+        `https://www.omdbapi.com/?apikey=${API_KEY}&i=${id}&plot=full`,
+      )
+      if (response.data.Response === 'False') {
+        return rejectWithValue(response.data.Error)
+      }
+
+      return response.data
+    } catch {
+      return rejectWithValue('Не удалось загрузить детали фильма. Ошибка сети')
+    }
+  },
+)
 
 // дополним интерфейс. Так как теперь теперь мы отслеживаем состояния в асинхронном коде
 // теперь функция у нас не чистая и операция не происходит моментально
 
 interface MovieState {
   results: MovieSearchResult[]
+  //Добавим новое свойство в котором будут лежать полные данные
+  selectedMovie: any | null
   loading: boolean // флаг загрузки
   error: string | null // ну и поле для ошибки
 }
@@ -54,6 +74,7 @@ interface MovieState {
 const initialState: MovieState = {
   // теперь result будет пустым массивом изначально. Без тестовых данных
   results: [],
+  selectedMovie: null,
   loading: false, // загрузка не происходит
   error: null, // начальное значение null, как в интерфейсе
 }
@@ -62,7 +83,11 @@ const movieSlice = createSlice({
   name: 'movies',
   initialState,
   // обычные редюсеры я удалил, мне они пока не нужны
-  reducers: {},
+  reducers: {
+    clearSelectedMovie: (state) => {
+      state.selectedMovie = null
+    },
+  },
   extraReducers(builder) {
     // теперь нужно состояние Thunk обработать
     // Redux автоматически создаёт 3 состояния:
@@ -84,8 +109,25 @@ const movieSlice = createSlice({
         state.loading = false // в любом случае флаг загрузки ставим false, так как она завершена
         state.error = action.payload as string // это поведение мы описали выше в функции fetchMovie
       })
+
+      // обработаем состояния для загрузки полной информации о фильме
+      .addCase(fetchMovieDetails.pending, (state) => {
+        state.loading = true
+        state.error = null
+      })
+      .addCase(fetchMovieDetails.fulfilled, (state, action) => {
+        state.loading = false
+        state.selectedMovie = action.payload
+      })
+      .addCase(fetchMovieDetails.rejected, (state, action) => {
+        state.loading = false
+        state.error = action.payload as string
+      })
   },
 })
 
 // Экспортируем только редюсер
 export default movieSlice.reducer
+
+// теперь экспортируем еще и action
+export const { clearSelectedMovie } = movieSlice.actions

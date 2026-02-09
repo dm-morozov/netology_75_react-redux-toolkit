@@ -1,13 +1,9 @@
-import { Link, Route, Routes, useParams } from 'react-router-dom'
+import { Link, Route, Routes } from 'react-router-dom'
 // import Counter from './components/Counter'
 // import Todos from './components/Todos'
 import './App.css'
 import SearchPage from './components/movie/pages/SearchPage'
-
-const MovieDetailsPlaceholder = () => {
-  const { id } = useParams<{ id: string }>()
-  return <div>Страница деталей фильма (id = {id})</div>
-}
+import MovieDetailPage from './components/movie/pages/MovieDetailPage'
 
 function App() {
   return (
@@ -34,7 +30,7 @@ function App() {
 
         <Routes>
           <Route path="/" element={<SearchPage />} />
-          <Route path="/movie/:id" element={<MovieDetailsPlaceholder />} />
+          <Route path="/movie/:id" element={<MovieDetailPage />} />
           <Route path="/favorites" element={<div>Избранное</div>} />
         </Routes>
       </div>

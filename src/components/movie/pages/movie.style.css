@@ -30,3 +30,19 @@
   gap: 16px;
   margin-top: 32px;
 }
+
+.movie-detail {
+  display: flex;
+  gap: 30px;
+  text-align: left;
+  margin-top: 20px;
+}
+
+.movie-detail img {
+  max-width: 300px;
+  border-radius: 8px;
+}
+
+.info h2 {
+  margin-top: 0;
+}

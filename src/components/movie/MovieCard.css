@@ -36,7 +36,8 @@
   font-size: 0.95rem;
 }
 
-.search-error {
+.search-error,
+.details-error {
   color: rgb(201, 65, 15);
 }
 
