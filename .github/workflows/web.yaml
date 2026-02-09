@@ -1,4 +1,4 @@
-name: Netology React + TypeScript Build
+name: TypeScript Build
 
 on:
   push:
